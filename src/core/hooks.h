@@ -7,3 +7,4 @@
     RType NTAPI Detour##Name(__VA_ARGS__);
 
 DECLARE_HOOK(BOOL, IsDebuggerPresent, VOID);
+DECLARE_HOOK(BOOL, CheckRemoteDebuggerPresent, HANDLE hProcess, PBOOL pbDebuggerPresent);
