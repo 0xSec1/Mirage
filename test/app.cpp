@@ -1,5 +1,5 @@
-#include <windows.h>
 #include <iostream>
+#include "../src/core/common.h"
 
 void PauseForDebugger(){
     std::cout << "\n[ACTION] Please attach your debugger NOW." << std::endl;
@@ -7,8 +7,25 @@ void PauseForDebugger(){
     std::cin.get();
 }
 
+bool readPEB(){
+#ifdef _WIN64
+    PPEB pPeb = (PPEB)__readgsqword(0x60);
+#else
+    PPEB pPeb = (PPEB)__readfsdqord(0x30);
+#endif
+    return (pPeb -> BeingDebugged == 1);
+}
+
 int main(){
     PauseForDebugger();
+
+    //checks PEB
+    if(readPEB()){
+        std::cout << "[TARGET] Debugger detected via PEB" <<  std::endl;
+        std::cout << "[TARGET] Terminating process to evade analysis" << std::endl;
+        ExitProcess(1);
+    }
+
     std::cout << "[TARGET 1] Calling IsDebuggerPresent()..." << std::endl;
 
     BOOL isDebugged = IsDebuggerPresent();
