@@ -8,8 +8,6 @@
 bool HookEngine::Initialize(){
     log("Initlizing MinHook Engine...");
 
-    SanitizePEB();
-
     HANDLE hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)WatcherThread, NULL, 0, NULL);
 
     if(hThread){
@@ -40,10 +38,8 @@ void HookEngine::Shutdown(){
 void HookEngine::SanitizePEB(){
     #ifdef _WIN64
         PPEB pPeb = (PPEB)__readgsqword(0x60);
-        log("Architecture x64");
     #else
         PPEB pPeb = (PPEB)__readfsdword(0x30);
-        log("Architecture x32");
     #endif
 
         if(!pPeb){
@@ -51,16 +47,11 @@ void HookEngine::SanitizePEB(){
             return;
         }
 
-        log("PEB Address: %p", pPeb);
-
         //Read beingDebugged at offset 0x2
         int beingDebugged = (int)pPeb->BeingDebugged;
         if(beingDebugged == 1){
             log("[PEB] beingDebugged flag: 1 [Detected]. Patching it...");
             pPeb->BeingDebugged = 0;    //patch it
-        }
-        else{
-            log("[PEB] beingDebugged flag: 0 [Pass]");
         }
 
     //Read NtGlobalFlag
@@ -73,9 +64,6 @@ void HookEngine::SanitizePEB(){
         if(dwNtGlobalFlag != 0){
             log("[PEB] NtGlobalFlag: [0x%X] Detected. Patching it...", dwNtGlobalFlag);
             dwNtGlobalFlag = 0;
-        }
-        else{
-            log("[PEB] NtGlobalFlag: [0x0] Pass");
         }
 }
 
