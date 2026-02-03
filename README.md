@@ -1,4 +1,4 @@
-## Mirage - Anti-Anti-Debug Framewor for Malware
+## Mirage - Anti-Anti-Debug Framework for Malware
 Mirage is a modular dynamic binary instrumentation framework designed to defeat anti-debugging techniques employed by malware. Unlike traditional debuggers that rely solely on API hooking, Mirage implements a multi-layered evasion strategy involving process injection, API interception (MinHook), and direct memory manipulation (PEB patching). The tool allows researchers to attach standard debuggers (e.g. x64dbg) to hostile applications without triggering anti-debug mechanisms such as IsDebuggerPresent, CheckRemoteDebuggerPresent, or direct PEB flag checks.
 
 ## Feature
