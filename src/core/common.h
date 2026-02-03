@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <winternl.h>
+#include <intrin.h> // __readgsqword or __readfsdword
 #include <cstdio>
 
 #define log(fmt, ...) printf("[MIRAGE] " fmt "\n", ##__VA_ARGS__)
