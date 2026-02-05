@@ -8,3 +8,6 @@
 
 DECLARE_HOOK(BOOL, IsDebuggerPresent, VOID);
 DECLARE_HOOK(BOOL, CheckRemoteDebuggerPresent, HANDLE hProcess, PBOOL pbDebuggerPresent);
+DECLARE_HOOK(HANDLE, CreateToolhelp32Snapshot, DWORD dwFlags, DWORD th32ProcessID);
+DECLARE_HOOK(BOOL, Process32FirstW, HANDLE hSnapshot, LPPROCESSENTRY32W lppe);
+DECLARE_HOOK(BOOL, Process32NextW, HANDLE hSnapshot, LPPROCESSENTRY32W lppe);

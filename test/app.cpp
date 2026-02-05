@@ -16,8 +16,41 @@ bool readPEB(){
     return (pPeb -> BeingDebugged == 1);
 }
 
+void ScanProcess(){
+    std::cout << "\n[TARGET] Scanning running processes..." << std::endl;
+    HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+    if(hSnap == INVALID_HANDLE_VALUE){
+        return;
+    }
+
+    PROCESSENTRY32W pe32;
+    pe32.dwSize = sizeof(PROCESSENTRY32W);
+
+    bool foundTool = false;
+
+    if(Process32FirstW(hSnap, &pe32)){
+        do{
+            std::wstring name = pe32.szExeFile;
+            if(name == L"x64dbg.exe" || name == L"x32dbg.exe" || name == L"ollydbg.exe"){
+                std::wcout << "[ALERT] Found Debugger Tool: " << name.c_str() << std::endl;
+                foundTool = true;
+            }
+        } while(Process32NextW(hSnap, &pe32));
+    }
+
+    CloseHandle(hSnap);
+
+    if(!foundTool){
+        std::cout << "[TARGET] Process Scan Complete. Nothing Found" << std::endl;
+    }
+}
+
 int main(){
     PauseForDebugger();
+
+    //Scan Process
+    ScanProcess();
 
     //checks PEB
     if(readPEB()){

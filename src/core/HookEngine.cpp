@@ -25,6 +25,10 @@ bool HookEngine::Initialize(){
 
     INSTALL_HOOK(L"kernel32.dll", IsDebuggerPresent);
     INSTALL_HOOK(L"kernel32.dll", CheckRemoteDebuggerPresent);
+    INSTALL_HOOK(L"kernel32.dll", CreateToolhelp32Snapshot);
+    INSTALL_HOOK(L"kernel32.dll", Process32FirstW);
+    INSTALL_HOOK(L"kernel32.dll", Process32NextW);
+
     log("All hooks installed");
     return true;
 }
