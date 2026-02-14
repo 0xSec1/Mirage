@@ -1,4 +1,6 @@
 #include "hooks.h"
+#include "nt_defs.h"
+#include <winternl.h>
 
 const std::vector<std::wstring> tools = {
     L"x64dbg.exe",
@@ -58,4 +60,27 @@ BOOL WINAPI DetourProcess32NextW(HANDLE hSnapshot, LPPROCESSENTRY32W lppe){
     }
 
     return result;
+}
+
+//check for kernel debugger
+NTSTATUS NTAPI DetourNtQuerySystemInformation(
+        SYSTEM_INFORMATION_CLASS SystemInformationClass,
+        PVOID SystemInformation,
+        ULONG SystemInformationLength,
+        PULONG ReturnLength
+){
+    NTSTATUS status = fpNtQuerySystemInformation(SystemInformationClass, SystemInformation, SystemInformationLength, ReturnLength);
+
+    //check if asked for 0x23 -> 35 (SystemKernelDebuggerInfo)
+    if(NT_SUCCESS(status) && SystemInformationClass == SystemKernelDebuggerInformation){
+        auto pInfo = (PSYSTEM_KERNEL_DEBUGGER_INFORMATION)SystemInformation;
+
+        if(pInfo){
+            log("Spoofing Kernel Debugger Status...");
+            pInfo->KernelDebuggerEnabled = FALSE;
+            pInfo->KernelDebuggerNotPresent = TRUE;
+        }
+    }
+
+    return status;
 }

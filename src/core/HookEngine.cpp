@@ -29,6 +29,8 @@ bool HookEngine::Initialize(){
     INSTALL_HOOK(L"kernel32.dll", Process32FirstW);
     INSTALL_HOOK(L"kernel32.dll", Process32NextW);
 
+    INSTALL_HOOK(L"ntdll.dll", NtQuerySystemInformation);
+
     log("All hooks installed");
     return true;
 }
@@ -73,7 +75,7 @@ void HookEngine::SanitizePEB(){
 
 //watches PEB
 DWORD WINAPI HookEngine::WatcherThread(LPVOID lpParam){
-    log("[THREAD] Watcher thread starts. Polling PEB");
+    log("Watcher thread starts. Polling PEB");
     while(true){
         SanitizePEB();
         Sleep(100);
